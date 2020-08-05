@@ -27,6 +27,7 @@ galcore-objs += kernel/gc_hal_kernel_mmu.o
 galcore-objs += kernel/gc_hal_kernel_video_memory.o
 galcore-objs += kernel/gc_hal_kernel_power.o
 galcore-objs += kernel/gc_hal_kernel_security_v1.o
+galcore-objs += kernel/gc_hal_kernel_preemption.o
 galcore-objs += kernel/arch/gc_hal_kernel_context.o
 galcore-objs += kernel/arch/gc_hal_kernel_hardware.o
 galcore-objs += kernel/arch/gc_hal_kernel_hardware_async_fe.o
