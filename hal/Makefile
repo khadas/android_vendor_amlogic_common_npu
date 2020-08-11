@@ -11,7 +11,7 @@ galcore-objs += os/linux/kernel/allocator/default/gc_hal_kernel_allocator_dma.o
 galcore-objs += os/linux/kernel/allocator/default/gc_hal_kernel_allocator_gfp.o
 galcore-objs += os/linux/kernel/allocator/default/gc_hal_kernel_allocator_reserved_mem.o
 galcore-objs += os/linux/kernel/gc_hal_kernel_driver.o
-galcore-objs += os/linux/kernel/platform/amlogic/gc_hal_kernel_platform_amlogic.o
+#galcore-objs += os/linux/kernel/platform/amlogic/gc_hal_kernel_platform_amlogic.o
 galcore-objs += os/linux/kernel/allocator/default/gc_hal_kernel_allocator_dmabuf.o
 galcore-objs += os/linux/kernel/gc_hal_kernel_iommu.o
 galcore-objs += os/linux/kernel/gc_hal_kernel_drm.o
@@ -41,6 +41,11 @@ galcore-objs += security_v1/gc_hal_ta_hardware.o
 galcore-objs += security_v1/gc_hal_ta_mmu.o
 galcore-objs += security_v1/os/emulator/gc_hal_ta_emulator.o
 
+ifeq ($(PLATFORM_VERSION),9)
+galcore-objs += os/linux/kernel/platform/amlogic/gc_hal_kernel_platform_amlogic_p.o
+else
+galcore-objs += os/linux/kernel/platform/amlogic/gc_hal_kernel_platform_amlogic_q.o
+endif
 
 EXTRA_CFLAGS = -DLINUX -DDRIVER
 EXTRA_CFLAGS += -DDBG=0
