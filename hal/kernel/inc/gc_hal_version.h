@@ -64,7 +64,7 @@
 
 #define gcvVERSION_BUILD     279124
 
-#define gcvVERSION_STRING    "6.4.3.279124BB"
+#define gcvVERSION_STRING    "6.4.3.279124BC"
 
 #endif /* __gc_hal_version_h_ */
 
