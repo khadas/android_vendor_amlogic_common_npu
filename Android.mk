@@ -86,7 +86,7 @@ include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := \
-    $(LIB_PATH)/libOpenVX.so
+    $(RRODUCT_PATH)/libOpenVX.so
 LOCAL_MODULE         := libOpenVX
 LOCAL_MODULE_SUFFIX  := .so
 LOCAL_MODULE_TAGS    := optional
