@@ -55,6 +55,8 @@
 
 #include "gc_hal_kernel_linux.h"
 #include "gc_hal_kernel_allocator.h"
+#include "gc_feature_database.h"
+#include "gc_hal.h"
 #include <linux/pagemap.h>
 #include <linux/seq_file.h>
 #include <linux/mman.h>
@@ -1234,7 +1236,7 @@ gc_dump_trigger_show(void *m, void *data)
 #if gcdENABLE_3D
     len += fs_printf(ptr + len, "Get dump from /proc/kmsg or /sys/kernel/debug/gc/galcore_trace\n");
 
-    if (kernel && kernel->hardware->options.powerManagement == gcvFALSE)
+    if (kernel)
     {
         _DumpState(kernel);
     }
@@ -1606,6 +1608,107 @@ static int gc_clk_show(void* m, void* data)
     return len;
 }
 
+static int gc_dump_param_show(void *m, void *unused)
+{
+	fs_printf(m, "galcore module param will dumped by printk\n");
+	gckOS_DumpParam();
+	return 0;
+}
+
+static int customID = 0;
+static int gc_chipinfo_show(void *m, void *unused)
+{
+	int entryNum = sizeof(gChipInfo) / sizeof(gChipInfo[0]);
+    int i;
+	if(customID == 0)
+	{
+		gcQueryFeatureDB(0,0,0,0,0);
+		fs_printf(m, "chip id should setting by <echo **id>chipinfo>\n");
+	}
+    /* check formal release entries first */
+    for (i = 0; i < entryNum; ++i)
+    {
+
+        if(gChipInfo[i].customerID == customID)
+        {
+		fs_printf(m, "chipID:0x%x\n",gChipInfo[i].chipID);
+		fs_printf(m, "customID:0x%x\n",customID);
+		fs_printf(m, "shaderCore number:%d\n",gChipInfo[i].NumShaderCores);
+		fs_printf(m, "NNcore number:%d\n",gChipInfo[i].NNCoreCount/2);
+		fs_printf(m, "NNInputDepth:%d\n",gChipInfo[i].NNInputBufferDepth);
+		fs_printf(m, "TPcore number:%d\n",gChipInfo[i].TPEngine_CoreCount);
+		fs_printf(m, "AXI-SRAM size:0x%x\n",gChipInfo[i].AXI_SRAM_SIZE);
+		fs_printf(m, "VIP-SRAM size:0x%x\n",gChipInfo[i].VIP_SRAM_SIZE);
+		fs_printf(m, "NN-KERNEL-X size:%d\n",gChipInfo[i].NN_KERNEL_X_SIZE);
+		fs_printf(m, "NN-KERNEL-Y size:%d\n",gChipInfo[i].NN_KERNEL_Y_SIZE);
+		fs_printf(m, "MMU ENABLE:%d\n",gChipInfo[i].REG_MMU);
+		fs_printf(m, "TP reorder:%d\n",gChipInfo[i].TP_REORDER);
+		fs_printf(m, "NN-FP16-ALU:%d\n",gChipInfo[i].NN_FP16_ALU);
+		fs_printf(m, "NN-INT16-ALU:%d\n",gChipInfo[i].NN_INT16_ALU);
+		fs_printf(m, "TP-ROI-POOLING:%d\n",gChipInfo[i].TP_ROI_POOLING);
+		fs_printf(m, "NN-DEPTHWISE-SUPPORT:%d\n",gChipInfo[i].NN_DEPTHWISE_SUPPORT);
+		break;
+        }
+    }
+	return 0;
+}
+
+static int gc_chipinfo_write(const char __user *ubuf, size_t count, void* data)
+{
+	int dval[2];
+	int i;
+	int j;
+
+	char buf[10];
+    size_t len = min(count, sizeof(buf) - 1);
+
+	printk("chipinfo write enter,customID-[0x00,0xff]\n");
+    if(copy_from_user(buf, ubuf, len))
+	{
+        return -EFAULT;
+	}
+
+	if((buf[0]=='0') && (buf[1]=='x'))
+	{
+		customID = 0;
+		for(i=2,j=0;i<count-1&&j<2;i++,j++)
+		{
+			if((buf[i] >= '0') && (buf[i] <= '9'))
+			{
+				dval[j] = buf[i] - '0';
+			}
+			else if((buf[i] >= 'a') && (buf[i] <= 'f'))
+			{
+				dval[j] = buf[i] - 'a' + 10;
+			}
+			else if((buf[i] >= 'A') && (buf[i] <= 'F'))
+			{
+				dval[j] = buf[i] - 'A' + 10;
+			}
+		}
+
+		if(count == 5)
+		{
+			customID = 16*dval[0]+dval[1];
+		}
+		else if(count == 4)
+		{
+			customID = dval[0];
+		}
+		else
+		{
+			printk("count number not support:%ld\n",(long)count);
+		}
+	}
+	else
+	{
+		strtoint_from_user(buf, count, &customID);
+	}
+	printk("customid:0x%x\n",customID);
+	return 0;
+}
+
+
 static gctUINT32 clkScale[2] = {0, 0};
 
 static int _set_clk(const char* buf)
@@ -1728,6 +1831,19 @@ int gc_clk_show_debugfs(struct seq_file* m, void* data)
     return gc_clk_show((void*)m , data);
 }
 
+int gc_dump_param_show_debugfs(struct seq_file* m, void* data)
+{
+    return gc_dump_param_show((void*)m , data);
+}
+int gc_chipinfo_show_debugfs(struct seq_file*m, void *unused)
+{
+    return gc_chipinfo_show((void *)m, unused);
+}
+int gc_chipinfo_write_debugfs(const char __user *ubuf, size_t count, void* data)
+{
+    return gc_chipinfo_write(ubuf, count, data );
+}
+
 static gcsINFO InfoList[] =
 {
     {"info", gc_info_show_debugfs},
@@ -1741,6 +1857,8 @@ static gcsINFO InfoList[] =
     {"vidmem64x", gc_vidmem_show_debugfs, gc_vidmem_write},
     {"dump_trigger", gc_dump_trigger_show_debugfs, gc_dump_trigger_write},
     {"clk", gc_clk_show_debugfs, gc_clk_write},
+    {"dump_param",gc_dump_param_show_debugfs},
+    {"chipinfo",gc_chipinfo_show_debugfs, gc_chipinfo_write_debugfs},
 };
 #else
 static ssize_t info_show(struct device *dev, struct device_attribute* attr, char *buf)
@@ -1856,7 +1974,7 @@ _DebugfsInit(
 #ifdef CONFIG_DEBUG_FS
     gckDEBUGFS_DIR dir = &Device->debugfsDir;
 
-    gcmkONERROR(gckDEBUGFS_DIR_Init(dir, gcvNULL, "gc"));
+	gcmkONERROR(gckDEBUGFS_DIR_Init(dir, gcvNULL, "galcore"));
     gcmkONERROR(gckDEBUGFS_DIR_CreateFiles(dir, InfoList, gcmCOUNTOF(InfoList), Device));
 #else
     int ret;

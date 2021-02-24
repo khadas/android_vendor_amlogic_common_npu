@@ -1044,6 +1044,12 @@ gcoHAL_SetLastCommitStatus(
     IN gctBOOL Pending
     );
 
+gceSTATUS
+gcoHAL_IsFlatMapped(
+    IN gctPHYS_ADDR_T PhysicalAddress,
+    OUT gctUINT32 *Address
+    );
+
 /******************************************************************************\
 ********************************** gcoOS Object *********************************
 \******************************************************************************/

@@ -4776,7 +4776,7 @@ gceSTATUS gckFUNCTION_CheckCHIPID(
     )
 {
     gckHARDWARE hardware = (gckHARDWARE)Execution->hardware;
-    if((hardware->identity.customerID == 0xb5) || (hardware->identity.customerID == 0x9f) || (hardware->identity.customerID == 0x7d) || (hardware->identity.customerID == 0x99) ||
+    if( (hardware->identity.customerID == 0xb5) || (hardware->identity.customerID == 0x9f) || (hardware->identity.customerID == 0x99) ||
         (hardware->identity.customerID == 0xa1) || (hardware->identity.customerID == 0x88) || (hardware->identity.customerID == 0x98))
     {
         return gcvSTATUS_TRUE;

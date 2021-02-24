@@ -61,4 +61,12 @@
 */
 #define VX_USER_LOOKUP_TABLE_SUPPORT 1
 
+/*
+VX_CREATE_TENSOR_SUPPORT_PHYSICAL is used to declare that openvx can support physical address for vxCreateTensorFromHandle
+ [value]
+ 0: not support
+ 1: support
+*/
+#define VX_CREATE_TENSOR_SUPPORT_PHYSICAL 1
+
 #endif /* __VX_KHR_COMPATIBLE_H__ */

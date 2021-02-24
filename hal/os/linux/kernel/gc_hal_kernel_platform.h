@@ -61,6 +61,12 @@
 #include <linux/pci.h>
 #endif
 
+#define POWER_IDLE          0
+#define POWER_ON            1
+#define POWER_SUSPEND       2
+#define POWER_OFF           3
+#define POWER_RESET         4
+
 typedef struct _gcsMODULE_PARAMETERS
 {
     gctINT                  irqs[gcvCORE_COUNT];
@@ -117,6 +123,7 @@ typedef struct _gcsMODULE_PARAMETERS
 
     /* Debug or other information. */
     gctUINT                 stuckDump;
+	gctINT                  gpuProfiler;
 
     /* device type, 0 for char device, 1 for misc device. */
     gctUINT                 deviceType;
@@ -313,6 +320,30 @@ typedef struct _gcsPLATFORM_OPERATIONS
         IN gctPOINTER Node,
         IN gctUINT32 Reason
     );
+
+	/*******************************************************************************
+    **
+    ** getPowerStatus
+    **
+    ** Get power status by user
+    */
+    gceSTATUS
+    (*getPowerStatus)(
+        IN gcsPLATFORM *Platform,
+        OUT gctUINT32_PTR pstat
+		);
+	
+	/*******************************************************************************
+    **
+    ** setPolicy
+    **
+    ** Set power policy by user
+    */
+    gceSTATUS
+    (*setPolicy)(
+        IN gcsPLATFORM *Platform,
+        IN gctUINT32  powerLevel
+        );
 
 /*******************************************************************************
 **

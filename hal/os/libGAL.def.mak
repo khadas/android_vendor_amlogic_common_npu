@@ -281,6 +281,7 @@ EXPORTS
     gcoHAL_GetPriority
     gcoHAL_GetLastCommitStatus
     gcoHAL_SetLastCommitStatus
+    gcoHAL_IsFlatMapped
 
 !IF "$(VIVANTE_ENABLE_3D)" == "1"
     gcoHAL_QueryShaderCaps

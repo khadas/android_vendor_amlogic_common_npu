@@ -4490,13 +4490,14 @@ _CacheOperation(
 
         mutex_unlock(&mdl->mapsMutex);
 
-        if (ProcessID && mdlMap == gcvNULL)
+        if (ProcessID && !mdlMap && !mdl->wrapFromPhysical && !mdl->wrapFromLogical)
         {
             return gcvSTATUS_INVALID_ARGUMENT;
         }
 
         if ((!ProcessID && mdl->cacheable) ||
-            (mdlMap && mdlMap->cacheable))
+            (mdlMap && mdlMap->cacheable)  ||
+            mdl->wrapFromLogical)
         {
             gcmALLOCATOR_Cache(allocator,
                 mdl, Offset, Logical, Bytes, Operation);
@@ -7659,6 +7660,9 @@ gckOS_WrapMemory(
         gcmkONERROR(gcvSTATUS_OUT_OF_MEMORY);
     }
 
+    mdl->wrapFromPhysical = gcvFALSE;
+    mdl->wrapFromLogical  = gcvFALSE;
+
     if (Desc->flag & gcvALLOC_FLAG_DMABUF)
     {
         if (IS_ERR(gcmUINT64_TO_PTR(Desc->dmabuf)))
@@ -7684,6 +7688,15 @@ gckOS_WrapMemory(
         desc.userMem.physical = Desc->physical;
         desc.userMem.size     = Desc->size;
         bytes                 = Desc->size;
+
+        if (Desc->physical == gcvINVALID_PHYSICAL_ADDRESS)
+        {
+            mdl->wrapFromLogical = gcvTRUE;
+        }
+        else
+        {
+            mdl->wrapFromPhysical = gcvTRUE;
+        }
     }
     else if (Desc->flag & gcvALLOC_FLAG_EXTERNAL_MEMORY)
     {
