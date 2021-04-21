@@ -94,6 +94,8 @@ module_param(hardwareResetNum, int, 0644);
 static int nanoqFreq = 800000000;
 module_param(nanoqFreq, int, 0644);
 
+static gctUINT32 powerStatus = 0;
+
 gceSTATUS _InitDtsRegValue(IN gcsPLATFORM *Platform)
 {
     int ret = 0;
@@ -292,7 +294,7 @@ void Getpower_88(struct platform_device *pdev)
 void Getpower_99(struct platform_device *pdev)
 {
 #if (LINUX_VERSION_CODE <= KERNEL_VERSION(4, 10, 0))
-    power_domain_switch(NN_PD_0X99,0);
+    power_domain_switch(NN_PD_0X99,PWR_ON);
 #endif
 
     set_clock(pdev);
@@ -328,9 +330,11 @@ void Downpower_88(void)
 }
 void Downpower_99(void)
 {
+
 #if (LINUX_VERSION_CODE <= KERNEL_VERSION(4, 10, 0))
-    power_domain_switch(NN_PD_0X99,1);
+    power_domain_switch(NN_PD_0X99,PWR_OFF);
 #endif
+
 }
 void Downpower_a1(void)
 {
@@ -354,10 +358,7 @@ void Runtime_downpower_88(void)
 }
 void Runtime_getpower_99(struct platform_device *pdev)
 {
-#if (LINUX_VERSION_CODE <= KERNEL_VERSION(4, 10, 0))
-    power_domain_switch(NN_PD_0X99,0);
-#endif
-    set_clock(pdev);
+    Getpower_99(pdev);
 }
 void Runtime_downpower_99(void)
 {
@@ -395,6 +396,7 @@ void Runtime_downpower_be(struct platform_device *pdev)
 gceSTATUS _GetPower(IN gcsPLATFORM *Platform)
 {
     struct platform_device *pdev = Platform->device;
+    powerStatus = POWER_IDLE;
     _InitDtsRegValue(Platform);
     switch (nn_power_version)
     {
@@ -412,9 +414,14 @@ gceSTATUS _GetPower(IN gcsPLATFORM *Platform)
             nanoqFreq=666*1024*1024;
             Getpower_be(pdev);
             break;
+        case 5:
+            nanoqFreq=852*1000*1000;
+            Getpower_be(pdev);
+            break;
         default:
             printk("not find power_version\n");
     }
+    powerStatus = POWER_ON;
     return gcvSTATUS_OK;
 }
 
@@ -437,10 +444,14 @@ gceSTATUS  _SetPower(IN gcsPLATFORM * Platform,IN gceCORE GPU,IN gctBOOL Enable)
             case 4:
                 Runtime_downpower_be(pdev);
                 break;
+            case 5:
+                Runtime_downpower_be(pdev);
+                break;
             default:
                 printk("not find power_version\n");
                 break;
         }
+        powerStatus = POWER_OFF;
     }
     else
     {
@@ -462,10 +473,15 @@ gceSTATUS  _SetPower(IN gcsPLATFORM * Platform,IN gceCORE GPU,IN gctBOOL Enable)
                 Runtime_getpower_be(pdev);
                 mdelay(1);
                 break;
+            case 5:
+                Runtime_getpower_be(pdev);
+                mdelay(1);
+                break;
             default:
                 printk("not find power_version\n");
                 break;
         }
+        powerStatus = POWER_ON;
     }
     return gcvSTATUS_OK;
 }
@@ -473,6 +489,7 @@ gceSTATUS  _SetPower(IN gcsPLATFORM * Platform,IN gceCORE GPU,IN gctBOOL Enable)
 gceSTATUS _Reset(IN gcsPLATFORM * Platform, IN gceCORE GPU)
 {
     struct platform_device *pdev = Platform->device;
+    powerStatus = POWER_RESET;
     switch (nn_power_version)
     {
         case 1:
@@ -495,6 +512,11 @@ gceSTATUS _Reset(IN gcsPLATFORM * Platform, IN gceCORE GPU)
             mdelay(10);
             Runtime_getpower_be(pdev);
             break;
+        case 5:
+            Runtime_downpower_be(pdev);
+            mdelay(10);
+            Runtime_getpower_be(pdev);
+            break;
         default:
             printk("not find power_version\n");
             break;
@@ -507,6 +529,7 @@ gceSTATUS _Reset(IN gcsPLATFORM * Platform, IN gceCORE GPU)
         printk("hardwareResetNum is too large over 10000,just set zero\n");
         hardwareResetNum = 0;
     }
+    powerStatus = POWER_ON;
     return gcvSTATUS_OK;
 }
 
@@ -526,10 +549,58 @@ gceSTATUS _DownPower(IN gcsPLATFORM *Platform)
         case 4:
             Downpower_be();
             break;
+        case 5:
+            Downpower_be();
+            break;
         default:
             printk("not find power_version\n");
             break;
     }
+    powerStatus = POWER_OFF;
+    return gcvSTATUS_OK;
+}
+
+gceSTATUS
+_GetPowerStatus(IN gcsPLATFORM *Platform,OUT gctUINT32_PTR  pstat)
+{
+    *pstat = powerStatus;
+    return gcvSTATUS_OK;
+}
+
+gceSTATUS _SetPolicy(IN gcsPLATFORM *Platform,IN gctUINT32  powerLevel)
+{
+    //printk("nn_power_version:%d\n",nn_power_version);
+    switch (nn_power_version)
+    {
+        case 1:
+            nanoqFreq=666*1024*1024;
+            break;
+        case 2:
+            nanoqFreq=800000000;
+            break;
+        case 3:
+            nanoqFreq=800000000;
+            break;
+        case 4:
+            nanoqFreq=666*1024*1024;
+            break;
+        case 5:
+            nanoqFreq=852*1000*1000;
+            break;
+        default:
+            nanoqFreq=800000000;
+            break;
+    }
+
+    if (powerLevel == 2)
+    {
+        nanoqFreq = nanoqFreq/2;
+    }
+    else if(powerLevel == 3)
+    {
+        nanoqFreq = nanoqFreq/4;
+    }
+    printk("nanoqFreq:%d\n",nanoqFreq);
     return gcvSTATUS_OK;
 }
 
@@ -540,6 +611,8 @@ static gcsPLATFORM_OPERATIONS default_ops =
     .reset = _Reset,
     .putPower = _DownPower,
     .setPower = _SetPower,
+    .getPowerStatus = _GetPowerStatus,
+    .setPolicy = _SetPolicy,
 };
 
 static gcsPLATFORM default_platform =
