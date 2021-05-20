@@ -655,7 +655,7 @@ This define enables the use of VM for gckCommand and fence buffers.
         timeout in milliseconds.
  */
 #ifndef gcdPOWEROFF_TIMEOUT
-#   define gcdPOWEROFF_TIMEOUT                  300
+#   define gcdPOWEROFF_TIMEOUT                  3000
 #endif
 
 /*

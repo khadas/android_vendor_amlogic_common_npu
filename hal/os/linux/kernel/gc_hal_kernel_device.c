@@ -63,6 +63,7 @@
 #include <linux/slab.h>
 #include <linux/sched.h>
 #include <linux/io.h>
+#include <uapi/linux/sched/types.h>
 
 #define _GC_OBJ_ZONE    gcvZONE_DEVICE
 
@@ -2290,11 +2291,13 @@ _StartThread(
     gceSTATUS status = gcvSTATUS_OK;
     gckGALDEVICE device = galDevice;
     struct task_struct * task;
+    struct sched_param sparam;
+    sparam.sched_priority = 19;
 
     if (device->kernels[Core] != gcvNULL)
     {
         /* Start the kernel thread. */
-        task = kthread_run(threadRoutine, (void *)Core,
+        task = kthread_create(threadRoutine, (void *)Core,
                 "galcore_deamon/%d", Core);
 
         if (IS_ERR(task))
@@ -2308,10 +2311,13 @@ _StartThread(
             gcmkONERROR(gcvSTATUS_GENERIC_IO);
         }
 
+        wake_up_process(task);
+        sched_setscheduler_nocheck(task, SCHED_FIFO, &sparam);
+
         device->threadCtxts[Core]         = task;
         device->threadInitializeds[Core] = device->kernels[Core]->threadInitialized = gcvTRUE;
 
-        set_user_nice(task, -20);
+        /*set_user_nice(task, -20);*/
     }
     else
     {
