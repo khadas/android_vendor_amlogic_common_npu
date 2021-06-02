@@ -63,7 +63,9 @@
 #include <linux/slab.h>
 #include <linux/sched.h>
 #include <linux/io.h>
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,4,0)
 #include <uapi/linux/sched/types.h>
+#endif
 
 #define _GC_OBJ_ZONE    gcvZONE_DEVICE
 
@@ -2291,14 +2293,21 @@ _StartThread(
     gceSTATUS status = gcvSTATUS_OK;
     gckGALDEVICE device = galDevice;
     struct task_struct * task;
+    #if LINUX_VERSION_CODE >= KERNEL_VERSION(5,4,0)
     struct sched_param sparam;
     sparam.sched_priority = 19;
+    #endif
 
     if (device->kernels[Core] != gcvNULL)
     {
         /* Start the kernel thread. */
+        #if LINUX_VERSION_CODE >= KERNEL_VERSION(5,4,0)
         task = kthread_create(threadRoutine, (void *)Core,
                 "galcore_deamon/%d", Core);
+        #else
+        task = kthread_run(threadRoutine, (void *)Core,
+                "galcore_deamon/%d", Core);
+        #endif
 
         if (IS_ERR(task))
         {
@@ -2310,14 +2319,18 @@ _StartThread(
 
             gcmkONERROR(gcvSTATUS_GENERIC_IO);
         }
-
+        #if LINUX_VERSION_CODE >= KERNEL_VERSION(5,4,0)
         wake_up_process(task);
         sched_setscheduler_nocheck(task, SCHED_FIFO, &sparam);
+        #endif
 
         device->threadCtxts[Core]         = task;
         device->threadInitializeds[Core] = device->kernels[Core]->threadInitialized = gcvTRUE;
 
-        /*set_user_nice(task, -20);*/
+        #if LINUX_VERSION_CODE >= KERNEL_VERSION(5,4,0)
+        #else
+        set_user_nice(task, -20);
+        #endif
     }
     else
     {
