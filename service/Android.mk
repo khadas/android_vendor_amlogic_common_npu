@@ -112,8 +112,8 @@ LOCAL_SHARED_LIBRARIES += \
                           libnativewindow
 LOCAL_CFLAGS += -DANDROID_NN_API=30
 
-LOCAL_MODULE      := android.hardware.neuralnetworks@1.2-service-ovx-driver
-LOCAL_INIT_RC := android.hardware.neuralnetworks@1.2-service-ovx-driver.rc
+LOCAL_MODULE      := android.hardware.neuralnetworks@1.3-service-ovx-driver
+LOCAL_INIT_RC := android.hardware.neuralnetworks@1.3-service-ovx-driver.rc
 
 endif  #30
 
