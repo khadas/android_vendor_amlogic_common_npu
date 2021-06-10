@@ -189,11 +189,11 @@ static int gpuProfiler = 0;
 module_param(gpuProfiler, int, 0644);
 MODULE_PARM_DESC(gpuProfiler, "Enable profiling support, disabled by default");
 
-static ulong baseAddress = 0;
+static ulong baseAddress = 0x40000000;
 module_param(baseAddress, ulong, 0644);
 MODULE_PARM_DESC(baseAddress, "Only used for old MMU, set it to 0 if memory which can be accessed by GPU falls into 0 - 2G, otherwise set it to 0x80000000");
 
-static ulong physSize = 0;
+static ulong physSize = 0x40000000;
 module_param(physSize, ulong, 0644);
 MODULE_PARM_DESC(physSize, "Obsolete");
 
