@@ -1805,6 +1805,19 @@ static int gpu_resume(struct platform_device *dev)
     return 0;
 }
 
+
+static void gpu_shutdown(struct platform_device *pdev)
+{
+    if (platform->ops->putPower)
+    {
+        platform->ops->putPower(platform);
+    }
+
+    galcore_device->dma_mask = NULL;
+    galcore_device = NULL;
+}
+
+
 #if defined(CONFIG_PM) && LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 30)
 #ifdef CONFIG_PM_SLEEP
 static int gpu_system_suspend(struct device *dev)
@@ -1834,6 +1847,7 @@ static struct platform_driver gpu_driver = {
 
     .suspend    = gpu_suspend,
     .resume     = gpu_resume,
+    .shutdown   = gpu_shutdown,
 
     .driver     = {
         .owner = THIS_MODULE,
