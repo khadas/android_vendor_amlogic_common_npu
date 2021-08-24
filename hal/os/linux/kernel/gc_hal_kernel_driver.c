@@ -1809,25 +1809,7 @@ static int gpu_resume(struct platform_device *dev)
 
 static void gpu_shutdown(struct platform_device *pdev)
 {
-    gcmkHEADER();
-
-    if (galDevice && galDevice->os && galDevice->os->workqueue)
-    {
-        /* Wait for all works done. */
-        flush_workqueue(galDevice->os->workqueue);
-        /* Destory work queue. */
-        destroy_workqueue(galDevice->os->workqueue);
-        mdelay(10);
-    }
-
-    if (platform->ops->putPower)
-    {
-        platform->ops->putPower(platform);
-    }
-
-    galcore_device->dma_mask = NULL;
-    galcore_device = NULL;
-    gcmkFOOTER_NO();
+    gpu_remove(pdev);
 }
 
 
