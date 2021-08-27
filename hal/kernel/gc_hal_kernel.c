@@ -848,7 +848,7 @@ gckKERNEL_Destroy(
     gcmkVERIFY_OK(gckOS_DeleteMutex(Kernel->os, Kernel->vidMemBlockMutex));
 
     /* Destroy the database. */
-    if (Kernel->dbCreated)
+    if (0)
     {
         for (i = 0; i < gcmCOUNTOF(Kernel->db->db); ++i)
         {
