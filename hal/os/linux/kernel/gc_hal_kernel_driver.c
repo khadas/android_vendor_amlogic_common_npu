@@ -1702,6 +1702,14 @@ static int gpu_remove(struct platform_device *pdev)
     return 0;
 }
 
+
+static void viv_shutdown(struct platform_device *pdev)
+{
+    galDevice->gotoShutdown = gcvTRUE;
+
+    gpu_remove(pdev);
+}
+
 static int gpu_suspend(struct platform_device *dev, pm_message_t state)
 {
     gceSTATUS status;
@@ -1807,12 +1815,6 @@ static int gpu_resume(struct platform_device *dev)
 }
 
 
-static void gpu_shutdown(struct platform_device *pdev)
-{
-    gpu_remove(pdev);
-}
-
-
 #if defined(CONFIG_PM) && LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 30)
 #ifdef CONFIG_PM_SLEEP
 static int gpu_system_suspend(struct device *dev)
@@ -1842,7 +1844,7 @@ static struct platform_driver gpu_driver = {
 
     .suspend    = gpu_suspend,
     .resume     = gpu_resume,
-    .shutdown   = gpu_shutdown,
+    .shutdown   = viv_shutdown,
 
     .driver     = {
         .owner = THIS_MODULE,

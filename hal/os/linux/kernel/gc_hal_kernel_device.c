@@ -2954,6 +2954,13 @@ gckGALDEVICE_Destroy(
 
         if (Device->device)
         {
+            for (i = 0; i < gcdMAX_GPU_COUNT; i++)
+            {
+               if (Device->gotoShutdown && Device->kernels[i] != gcvNULL)
+               {
+                    Device->kernels[i]->dbCreated = gcvFALSE;
+               }
+            }
             gcmkVERIFY_OK(gckDEVICE_Destroy(Device->os, Device->device));
 
             for (i = 0; i < gcdMAX_GPU_COUNT; i++)

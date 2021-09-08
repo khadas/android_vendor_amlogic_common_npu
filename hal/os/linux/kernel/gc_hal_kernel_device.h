@@ -150,6 +150,9 @@ typedef struct _gckGALDEVICE
     /* gctsOs object for trust application. */
     gctaOS              taos;
 
+    /* If we are going to shut down. */
+    gctBOOL             gotoShutdown;
+
 #if gcdENABLE_DRM
     void *              drm;
 #endif
