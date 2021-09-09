@@ -1427,11 +1427,13 @@ gckCOMMAND_Construct(
         gctSIZE_T size = pageSize;
         gckVIDMEM_NODE videoMem = gcvNULL;
         gctUINT32 allocFlag = 0;
+        gctPHYS_ADDR_T physical;
 
 #if gcdENABLE_CACHEABLE_COMMAND_BUFFER
         allocFlag = gcvALLOC_FLAG_CACHEABLE;
 #endif
 
+        allocFlag |= gcvALLOC_FLAG_4GB_ADDR;
         /* Allocate video memory node for command buffers. */
         gcmkONERROR(gckKERNEL_AllocateVideoMemory(
             Kernel,
@@ -1460,6 +1462,16 @@ gckCOMMAND_Construct(
             gcvFALSE,
             &command->queues[i].logical
             ));
+
+        /* Get CPU physical address. */
+        gcmkONERROR(gckVIDMEM_NODE_GetPhysical(
+            Kernel,
+            videoMem,
+            0,
+            &physical
+            ));
+
+        gcmkPRINT("%s %d physical=%llx", __func__, __LINE__, physical);
 
         gcmkONERROR(gckOS_CreateSignal(
             os, gcvFALSE, &command->queues[i].signal

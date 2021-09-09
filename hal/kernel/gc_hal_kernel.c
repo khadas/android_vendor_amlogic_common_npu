@@ -1009,7 +1009,7 @@ gckKERNEL_AllocateVideoMemory(
     gcmkVERIFY_ARGUMENT(Kernel != gcvNULL);
 
     *NodeObject = gcvNULL;
-
+    Flag |= gcvALLOC_FLAG_4GB_ADDR;
     /* Check flags. */
     contiguous = Flag & gcvALLOC_FLAG_CONTIGUOUS;
     cacheable  = Flag & gcvALLOC_FLAG_CACHEABLE;
