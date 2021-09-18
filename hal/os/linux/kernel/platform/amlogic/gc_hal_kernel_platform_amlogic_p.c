@@ -473,16 +473,20 @@ void Runtime_getpower_be(struct platform_device *pdev)
     pm_runtime_enable(&pdev->dev);
     ret = pm_runtime_get_sync(&pdev->dev);
     if (ret < 0) printk("===runtime getpower error===\n");
+    mdelay(1);
     clk_switch(1);
+    mdelay(1);
 }
 void Runtime_downpower_be(struct platform_device *pdev)
 {
     int ret;
 
     clk_switch(0);
+    mdelay(1);
     ret = pm_runtime_put_sync(&pdev->dev);
     if (ret) printk("===pm_runtime_put_sync error===\n");
     pm_runtime_disable(&pdev->dev);
+    mdelay(1);
 }
 gceSTATUS _GetPower(IN gcsPLATFORM *Platform)
 {
