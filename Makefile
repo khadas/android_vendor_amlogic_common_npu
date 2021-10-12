@@ -148,7 +148,7 @@ modules:
 	echo CC=$(CC)
 	echo CROSS_COMPILE=$(CROSS_COMPILE)
 ifeq ($(CC),clang)
-	./aml_buildroot.sh $(M) $(KERNEL_SRC) $(O) $(CC) $(HOSTCC) $(LD) $(NM) $(OBJCOPY)
+	./aml_buildroot.sh $(M) $(KERNEL_SRC) $(O) $(CC) $(HOSTCC) $(LD) $(NM) $(OBJCOPY) $(KERNEL_ARCH)
 else
 	$(MAKE) -C $(KERNEL_SRC) M=$(M)/hal  modules ARCH=$(KERNEL_ARCH)  "EXTRA_CFLAGS+=-I$(INCLUDE) -Wno-error -I$(EXTRA_CFLAGS1) $(CONFIGS_BUILD) $(EXTRA_INCLUDE)" $(CONFIGS)
 endif

@@ -6,7 +6,6 @@ set -e
 # establish build environment and build options value
 # Please modify the following items according your build environment
 
-ARCH=arm-amlogic
 
 M=$1
 KERNEL_SRC=$2
@@ -16,6 +15,7 @@ HOSTCC=$5
 LD=$6
 NM=$7
 OBJCOPY=$8
+ARCH=$9
 
 
 export AQROOT=`pwd`
@@ -25,8 +25,7 @@ export SDK_DIR=$AQROOT/build/sdk
 
 case "$ARCH" in
 
-arm-amlogic)
-    ARCH=arm64
+arm64)
     export ARCH_TYPE=$ARCH
     export CPU_TYPE=0
     export CPU_ARCH=0
@@ -34,6 +33,13 @@ arm-amlogic)
     export FIXED_ARCH_TYPE=aarch64-gnu
     export KERNEL_DIR=$KERNEL_SRC
     export CROSS_COMPILE=aarch64-linux-gnu-
+;;
+
+arm)
+    export CPU_TYPE=0
+    export CPU_ARCH=0
+    export USE_OVXLIB=1
+    export KERNEL_DIR=$KERNEL_SRC
 ;;
 
 esac;
