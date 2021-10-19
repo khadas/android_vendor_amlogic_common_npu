@@ -11,19 +11,11 @@
 ##############################################################################
 LOCAL_PATH := $(call my-dir)
 
-ifeq ($(PLATFORM_VERSION), 11)
-PLATFORM_PATH=so_r
-else
-PLATFORM_PATH=so_p
-endif
-
 ifeq ($(TARGET_ARCH), arm64)
-LIB_PATH=libraryso/lib64/$(PLATFORM_PATH)
-NNSDK_PATH=nnsdk/lib/lib64/$(PLATFORM_PATH)
+LIB_PATH=libraryso/lib64/so_p
 Target=lib64
 else
-LIB_PATH=libraryso/lib32/$(PLATFORM_PATH)
-NNSDK_PATH=nnsdk/lib/lib32/$(PLATFORM_PATH)
+LIB_PATH=libraryso/lib32/so_p
 Target=lib
 endif
 
@@ -94,53 +86,6 @@ LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
 endif
 include $(BUILD_PREBUILT)
 
-include $(CLEAR_VARS)
-LOCAL_SRC_FILES := \
-    $(RRODUCT_PATH)/libOpenVX.so
-LOCAL_MODULE         := libOpenVX
-LOCAL_MODULE_SUFFIX  := .so
-LOCAL_MODULE_TAGS    := optional
-LOCAL_MODULE_CLASS   := SHARED_LIBRARIES
-LOCAL_CHECK_ELF_FILES := false
-ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo OK),OK)
-LOCAL_PROPRIETARY_MODULE := true
-LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/$(Target)
-else
-LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
-endif
-include $(BUILD_PREBUILT)
-
-include $(CLEAR_VARS)
-LOCAL_SRC_FILES := \
-    $(LIB_PATH)/libVSC.so
-LOCAL_MODULE         := libVSC
-LOCAL_MODULE_SUFFIX  := .so
-LOCAL_MODULE_TAGS    := optional
-LOCAL_MODULE_CLASS   := SHARED_LIBRARIES
-LOCAL_CHECK_ELF_FILES := false
-ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo OK),OK)
-LOCAL_PROPRIETARY_MODULE := true
-LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/$(Target)
-else
-LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
-endif
-include $(BUILD_PREBUILT)
-
-include $(CLEAR_VARS)
-LOCAL_SRC_FILES := \
-    $(LIB_PATH)/libNNArchPerf.so
-LOCAL_MODULE         := libNNArchPerf
-LOCAL_MODULE_SUFFIX  := .so
-LOCAL_MODULE_TAGS    := optional
-LOCAL_MODULE_CLASS   := SHARED_LIBRARIES
-LOCAL_CHECK_ELF_FILES := false
-ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo OK),OK)
-LOCAL_PROPRIETARY_MODULE := true
-LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/$(Target)
-else
-LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
-endif
-include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := \
@@ -158,38 +103,6 @@ LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
 endif
 include $(BUILD_PREBUILT)
 
-include $(CLEAR_VARS)
-LOCAL_SRC_FILES := \
-    $(LIB_PATH)/libarchmodelSw.so
-LOCAL_MODULE         := libarchmodelSw
-LOCAL_MODULE_SUFFIX  := .so
-LOCAL_MODULE_TAGS    := optional
-LOCAL_MODULE_CLASS   := SHARED_LIBRARIES
-LOCAL_CHECK_ELF_FILES := false
-ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo OK),OK)
-LOCAL_PROPRIETARY_MODULE := true
-LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/$(Target)
-else
-LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
-endif
-include $(BUILD_PREBUILT)
-
-
-include $(CLEAR_VARS)
-LOCAL_SRC_FILES := \
-    $(LIB_PATH)/libGAL.so
-LOCAL_MODULE         := libGAL
-LOCAL_MODULE_SUFFIX  := .so
-LOCAL_MODULE_TAGS    := optional
-LOCAL_MODULE_CLASS   := SHARED_LIBRARIES
-LOCAL_CHECK_ELF_FILES := false
-ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo OK),OK)
-LOCAL_PROPRIETARY_MODULE := true
-LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/$(Target)
-else
-LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
-endif
-include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := \
@@ -208,38 +121,6 @@ endif
 include $(BUILD_PREBUILT)
 
 
-include $(CLEAR_VARS)
-LOCAL_SRC_FILES := \
-    $(LIB_PATH)/libOpenVXU.so
-LOCAL_MODULE         := libOpenVXU
-LOCAL_MODULE_SUFFIX  := .so
-LOCAL_MODULE_TAGS    := optional
-LOCAL_MODULE_CLASS   := SHARED_LIBRARIES
-LOCAL_CHECK_ELF_FILES := false
-ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo OK),OK)
-LOCAL_PROPRIETARY_MODULE := true
-LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/$(Target)
-else
-LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
-endif
-include $(BUILD_PREBUILT)
-
-
-include $(CLEAR_VARS)
-LOCAL_SRC_FILES := \
-    $(LIB_PATH)/libovxlib.so
-LOCAL_MODULE         := libovxlib
-LOCAL_MODULE_SUFFIX  := .so
-LOCAL_MODULE_TAGS    := optional
-LOCAL_MODULE_CLASS   := SHARED_LIBRARIES
-LOCAL_CHECK_ELF_FILES := false
-ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo OK),OK)
-LOCAL_PROPRIETARY_MODULE := true
-LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/$(Target)
-else
-LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
-endif
-include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := \
@@ -257,38 +138,7 @@ LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
 endif
 include $(BUILD_PREBUILT)
 
-include $(CLEAR_VARS)
-LOCAL_SRC_FILES := \
-    $(NNSDK_PATH)/libnnsdk.so
-LOCAL_MODULE         := libnnsdk
-LOCAL_MODULE_SUFFIX  := .so
-LOCAL_MODULE_TAGS    := optional
-LOCAL_MODULE_CLASS   := SHARED_LIBRARIES
-LOCAL_CHECK_ELF_FILES := false
-ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo OK),OK)
-LOCAL_PROPRIETARY_MODULE := true
-LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/$(Target)
-else
-LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
-endif
-include $(BUILD_PREBUILT)
-
-include $(CLEAR_VARS)
-LOCAL_SRC_FILES := \
-    $(NNSDK_PATH)/libnndemo.so
-LOCAL_MODULE         := libnndemo
-LOCAL_MODULE_SUFFIX  := .so
-LOCAL_MODULE_TAGS    := optional
-LOCAL_MODULE_CLASS   := SHARED_LIBRARIES
-LOCAL_CHECK_ELF_FILES := false
-ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo OK),OK)
-LOCAL_PROPRIETARY_MODULE := true
-LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/$(Target)
-else
-LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
-endif
-include $(BUILD_PREBUILT)
-
 ifeq ($(BOARD_NPU_SERVICE_ENABLE), true)
 include $(LOCAL_PATH)/service/Android.mk
 endif
+
