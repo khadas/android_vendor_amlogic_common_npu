@@ -1405,7 +1405,9 @@ static int gc_chipinfo_write(const char __user *ubuf, size_t count, void* data)
 	}
 	else
 	{
+#ifdef CONFIG_DEBUG_FS
 		strtoint_from_user(buf, count, &customID);
+#endif
 	}
 	printk("customid:0x%x\n",customID);
 	return 0;

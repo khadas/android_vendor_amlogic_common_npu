@@ -148,7 +148,8 @@ modules:
 	echo CC=$(CC)
 	echo CROSS_COMPILE=$(CROSS_COMPILE)
 ifeq ($(CC),clang)
-	./aml_buildroot.sh $(M) $(KERNEL_SRC) $(O) $(CC) $(HOSTCC) $(LD) $(NM) $(OBJCOPY) $(KERNEL_ARCH)
+	#./aml_buildroot.sh $(M) $(KERNEL_SRC) $(O) $(CC) $(HOSTCC) $(LD) $(NM) $(OBJCOPY) $(KERNEL_ARCH)
+	$(MAKE) -C $(KERNEL_SRC) M=$(M)/hal  modules ARCH=$(KERNEL_ARCH)  "EXTRA_CFLAGS+=-I$(INCLUDE) -Wno-error -I$(EXTRA_CFLAGS1) $(CONFIGS_BUILD) $(EXTRA_INCLUDE)" $(CONFIGS)
 else
 	$(MAKE) -C $(KERNEL_SRC) M=$(M)/hal  modules ARCH=$(KERNEL_ARCH)  "EXTRA_CFLAGS+=-I$(INCLUDE) -Wno-error -I$(EXTRA_CFLAGS1) $(CONFIGS_BUILD) $(EXTRA_INCLUDE)" $(CONFIGS)
 endif
@@ -158,7 +159,8 @@ all:modules
 
 modules_install:
 ifeq ($(CC),clang)
-	$(MAKE) INSTALL_MOD_STRIP=1 M=$(M) -C $(KERNEL_SRC) modules_install
+	#$(MAKE) INSTALL_MOD_STRIP=1 M=$(M) -C $(KERNEL_SRC) modules_install
+	$(MAKE) INSTALL_MOD_STRIP=1 M=$(M)/hal -C $(KERNEL_SRC) modules_install
 else
 	$(MAKE) INSTALL_MOD_STRIP=1 M=$(M)/hal -C $(KERNEL_SRC) modules_install
 endif
