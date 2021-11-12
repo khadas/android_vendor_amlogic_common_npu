@@ -142,6 +142,7 @@ EXTRA_INCLUDE += -Iarch/arm/mm
 CONFIGS_BUILD := -Wno-undef -Wno-pointer-sign \
 		-Wno-unused-const-variable \
 		-Wimplicit-function-declaration \
+		-Wno-unused-function
 
 
 modules:
