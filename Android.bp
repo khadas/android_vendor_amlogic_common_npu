@@ -120,23 +120,6 @@ cc_prebuilt_library_shared {
 }
 
 cc_prebuilt_library_shared {
-   name: "libnnsdk",
-   vendor: true,
-   arch: {
-      arm: {
-         srcs: ["nnsdk/lib/lib32/so_p/libnnsdk.so"],
-      },
-      arm64: {
-         srcs: ["nnsdk/lib/lib64/so_p/libnnsdk.so"],
-      },
-   },
-   shared_libs: ["libGAL", "libOpenVX", "libOpenVXU", "libc++", "libc", "libdl", "liblog", "libm", "libovxlib"],
-   strip: {
-            none:true,
-   },
-}
-
-cc_prebuilt_library_shared {
    name: "libnndemo",
    vendor: true,
    arch: {

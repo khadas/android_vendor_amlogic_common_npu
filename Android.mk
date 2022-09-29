@@ -13,9 +13,11 @@ LOCAL_PATH := $(call my-dir)
 
 ifeq ($(TARGET_ARCH), arm64)
 LIB_PATH=libraryso/lib64/so_p
+SDK_PATH=nnsdk/lib/lib64/so_p
 Target=lib64
 else
 LIB_PATH=libraryso/lib32/so_p
+SDK_PATH=nnsdk/lib/lib32/so_p
 Target=lib
 endif
 
@@ -120,7 +122,25 @@ LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
 endif
 include $(BUILD_PREBUILT)
 
-
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := \
+    $(SDK_PATH)/libnnsdk.so
+ifeq ($(PRODUCT_CHIP_ID), ADLA_S5)
+LOCAL_MODULE         := libnnsdk_bak
+else
+LOCAL_MODULE         := libnnsdk
+endif
+LOCAL_MODULE_SUFFIX  := .so
+LOCAL_MODULE_TAGS    := optional
+LOCAL_MODULE_CLASS   := SHARED_LIBRARIES
+LOCAL_CHECK_ELF_FILES := false
+ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo OK),OK)
+LOCAL_PROPRIETARY_MODULE := true
+LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/$(Target)
+else
+LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
+endif
+include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := \
