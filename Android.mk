@@ -128,7 +128,11 @@ LOCAL_SRC_FILES := \
 ifeq ($(PRODUCT_CHIP_ID), ADLA_S5)
 LOCAL_MODULE         := libnnsdk_bak
 else
+ifeq ($(PRODUCT_CHIP_ID), ADLA_T7)
+LOCAL_MODULE         := libnnsdk_bak
+else
 LOCAL_MODULE         := libnnsdk
+endif
 endif
 LOCAL_MODULE_SUFFIX  := .so
 LOCAL_MODULE_TAGS    := optional
