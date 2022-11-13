@@ -124,30 +124,6 @@ include $(BUILD_PREBUILT)
 
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := \
-    $(SDK_PATH)/libnnsdk.so
-ifeq ($(PRODUCT_CHIP_ID), ADLA_S5)
-LOCAL_MODULE         := libnnsdk_bak
-else
-ifeq ($(PRODUCT_CHIP_ID), ADLA_T7)
-LOCAL_MODULE         := libnnsdk_bak
-else
-LOCAL_MODULE         := libnnsdk
-endif
-endif
-LOCAL_MODULE_SUFFIX  := .so
-LOCAL_MODULE_TAGS    := optional
-LOCAL_MODULE_CLASS   := SHARED_LIBRARIES
-LOCAL_CHECK_ELF_FILES := false
-ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo OK),OK)
-LOCAL_PROPRIETARY_MODULE := true
-LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/$(Target)
-else
-LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)
-endif
-include $(BUILD_PREBUILT)
-
-include $(CLEAR_VARS)
-LOCAL_SRC_FILES := \
     $(LIB_PATH)/libnnrt.so
 LOCAL_MODULE         := libnnrt
 LOCAL_MODULE_SUFFIX  := .so
