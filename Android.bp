@@ -14,7 +14,6 @@ cc_prebuilt_library_shared {
    strip: {
             none:true,
    },
-   check_elf_files: false,
 }
 
 cc_prebuilt_library_shared {
@@ -32,7 +31,6 @@ cc_prebuilt_library_shared {
    strip: {
             none:true,
    },
-   check_elf_files: false,
 }
 
 cc_prebuilt_library_shared {
@@ -50,8 +48,6 @@ cc_prebuilt_library_shared {
    strip: {
             none:true,
    },
-   
-   check_elf_files: false,
 }
 
 cc_prebuilt_library_shared {
@@ -69,7 +65,6 @@ cc_prebuilt_library_shared {
    strip: {
             none:true,
    },
-   check_elf_files: false,
 }
 
 
@@ -88,7 +83,6 @@ cc_prebuilt_library_shared {
    strip: {
             none:true,
    },
-   check_elf_files: false,
 }
 
 cc_prebuilt_library_shared {
@@ -106,7 +100,6 @@ cc_prebuilt_library_shared {
    strip: {
             none:true,
    },
-   check_elf_files: false,
 }
 
 cc_prebuilt_library_shared {
@@ -124,7 +117,6 @@ cc_prebuilt_library_shared {
    strip: {
             none:true,
    },
-   check_elf_files: false,
 }
 
 cc_prebuilt_library_shared {
@@ -142,7 +134,6 @@ cc_prebuilt_library_shared {
    strip: {
             none:true,
    },
-   check_elf_files: false,
 }
 
 cc_prebuilt_library_shared {
@@ -160,7 +151,6 @@ cc_prebuilt_library_shared {
    strip: {
             none:true,
    },
-   check_elf_files: false,
 }
 
 cc_library_headers {
